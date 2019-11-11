@@ -8,7 +8,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <p>{{trans('home.promote_link', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])}}</p>
+                    <p>{{trans('home.promote_link', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])}}
+                        <br> *您可以将50%返利生成抵扣券，也可以按照2:1申请提取到您的银行卡。</p>
                 </div>
             </div>
         </div>
@@ -29,6 +30,10 @@
                             </a>
                         </div>
                     </div>
+                    <div>请核对您的收款信息：
+                        <br>收款人：{{Auth::user()->wechat}}
+                        <br>银行卡：{{Auth::user()->qq}}
+                        <br>如信息为空，请在个人设置设置您的收款信息</div>
                 </div>
 
                 <!-- 邀请记录 -->
@@ -80,6 +85,9 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <span class="caption-subject bold"> {{trans('home.referral_title')}} </span>
+                        </div>
+                        <div class="actions">
+                            <button type="submit" class="btn red" onclick="extractCoupon()"> {{trans('home.referral_table_couponapply')}} </button>
                         </div>
                         <div class="actions">
                             <button type="submit" class="btn red" onclick="extractMoney()"> {{trans('home.referral_table_apply')}} </button>
@@ -195,6 +203,68 @@
                     </div>
                 </div>
 
+
+                <!-- 生成折扣券记录 -->
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-dark">
+                            <span class="caption-subject bold"> {{trans('home.referral_apply_title')}} </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                                <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> 名称 </th>
+                                    <th> 券码 </th>
+                                    <th> 优惠 </th>
+                                    <th> 有效期 </th>
+                                    <th> 状态 </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @if($couponList->isEmpty())
+                                    <tr>
+                                        <td colspan="10" style="text-align: center;">暂无数据</td>
+                                    </tr>
+                                @else
+                                    @foreach($couponList as $coupon)
+                                        <tr class="odd gradeX">
+                                            <td> {{$coupon->id}} </td>
+                                            <td> {{$coupon->name}} </td>
+                                            <td> <span class="label label-info">{{$coupon->sn}}</span> </td>
+                                            <td>
+                                                {{$coupon->amount}}元
+                                            </td>
+                                            <td> {{date('Y-m-d', $coupon->available_start)}} ~ {{date('Y-m-d', $coupon->available_end)}} </td>
+                                            <td>
+                                                @if ($coupon->usage == 1)
+                                                    @if($coupon->status == '1')
+                                                        <span class="label label-default"> 已使用 </span>
+                                                    @elseif ($coupon->status == '2')
+                                                        <span class="label label-default"> 已失效 </span>
+                                                    @else
+                                                        <span class="label label-success"> 未使用 </span>
+                                                    @endif
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+                                    {{ $referralLogList->links() }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- END PAGE BASE CONTENT -->
@@ -209,6 +279,16 @@
         // 申请提现
         function extractMoney() {
             $.post("{{url('extractMoney')}}", {_token:'{{csrf_token()}}'}, function (ret) {
+                layer.msg(ret.message, {time: 1000}, function () {
+                    if (ret.status == 'success') {
+                        window.location.reload();
+                    }
+                });
+            });
+        }
+        // song
+        function extractCoupon() {
+            $.post("{{url('extractCoupon')}}", {_token:'{{csrf_token()}}'}, function (ret) {
                 layer.msg(ret.message, {time: 1000}, function () {
                     if (ret.status == 'success') {
                         window.location.reload();

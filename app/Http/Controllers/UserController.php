@@ -775,6 +775,7 @@ class UserController extends Controller
         $view['referralLogList'] = ReferralLog::uid()->with('user')->orderBy('id', 'desc')->paginate(10);
         $view['referralApplyList'] = ReferralApply::uid()->with('user')->orderBy('id', 'desc')->paginate(10);
         $view['referralUserList'] = User::query()->select(['username', 'created_at'])->where('referral_uid', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
+        $view['couponList'] = Coupon::query()->where('user_id', = , Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('user.referral', $view);
     }
@@ -812,10 +813,88 @@ class UserController extends Controller
         $obj->user_id = Auth::user()->id;
         $obj->before = $ref_amount;
         $obj->after = 0;
-        $obj->amount = $ref_amount;
+        // song 除以2 
+        $obj->amount = $ref_amount / 2 ;
         $obj->link_logs = $link_logs;
         $obj->status = 0;
         $obj->save();
+
+        return Response::json(['status' => 'success', 'data' => '', 'message' => '申请成功，请等待管理员审核']);
+    }
+
+    // Song 提现自动生成 coupon 用户个人专用的那种
+    public function extractCoupon(Request $request)
+    {
+        // 判断账户是否过期
+        if (Auth::user()->expire_time < date('Y-m-d')) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：账号已过期，请先购买服务吧']);
+        }
+
+        // 判断是否已存在申请
+        $referralApply = ReferralApply::uid()->whereIn('status', [0, 1])->first();
+        if ($referralApply) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：已存在申请，请等待之前的申请处理完']);
+        }
+
+        // 校验可以提现金额是否超过系统设置的阀值
+        $ref_amount = ReferralLog::uid()->where('status', 0)->sum('ref_amount');
+        $ref_amount = $ref_amount / 100;
+        if ($ref_amount < self::$systemConfig['referral_money']) {
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . self::$systemConfig['referral_money'] . '元才可以提现，继续努力吧']);
+        }
+
+        // 取出本次申请关联返利日志ID
+        $link_logs = '';
+        $referralLog = ReferralLog::uid()->where('status', 0)->get();
+        foreach ($referralLog as $log) {
+            $link_logs .= $log->id . ',';
+            #这里自动将 返利的那个 已返利变为2 就是已返利
+            ReferralLog::query()->where('id', $log->id)->update(['status' => 2]);
+            #song 这里直接将所有的返利记录变为2 
+        }
+        $link_logs = rtrim($link_logs, ',');
+
+        $obj = new ReferralApply();
+        $obj->user_id = Auth::user()->id;
+        $obj->before = $ref_amount;
+        $obj->after = 0;
+        $obj->amount = $ref_amount;
+        $obj->link_logs = $link_logs;
+        //song 直接设定 3 已生成抵扣券
+        $obj->status = 3;
+        $obj->save();
+
+        //song 生成用户可用的 抵扣券
+        //生成抵扣券
+        DB::beginTransaction();
+        try {
+
+            $obj = new Coupon();
+            $obj->name = Auth::user()->id;
+            // 新增一个 user_id 字段 写入用户ID
+            $obj->user_id = Auth::user()->id;
+            $obj->sn = strtoupper(makeRandStr(7));
+            $obj->logo = '';
+            $obj->type = 1;
+            $obj->usage = 1;
+            $obj->amount = $ref_amount * 100;
+            $obj->discount = 0;
+            $obj->available_start = time();
+            // 有效期为 购买日起 一年内
+            $obj->available_end = time() + 31536000;
+            $obj->status = 0;
+            $obj->save();
+
+            DB::commit();
+
+            return Redirect::back()->with('successMsg', '生成成功');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('生成抵用券失败：' . $e->getMessage());
+
+            return Redirect::back()->withInput()->withErrors('生成失败：' . $e->getMessage());
+        }
 
         return Response::json(['status' => 'success', 'data' => '', 'message' => '申请成功，请等待管理员审核']);
     }

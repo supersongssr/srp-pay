@@ -71,9 +71,10 @@
                                                     <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label"> QQ </label>
+                                                    <label class="control-label"> 银行卡号 </label>
                                                     <input type="text" class="form-control" name="qq" value="{{Auth::user()->qq}}" id="qq" required />
                                                 </div>
+                                                <div>*请确保卡号和收款人一致，因收款人/卡号不正确导致打款失败，第三方打款难以审核！</div>
                                                 <div class="form-actions">
                                                     <div class="row">
                                                         <div class="col-md-12">
