@@ -739,7 +739,8 @@ class UserController extends Controller
                 }
 
                 // 取消重复返利
-                User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
+                //song 可以重复返利！ 这个可以有！
+                //User::query()->where('id', $order->user_id)->update(['referral_uid' => 0]);
 
                 DB::commit();
 
@@ -775,7 +776,7 @@ class UserController extends Controller
         $view['referralLogList'] = ReferralLog::uid()->with('user')->orderBy('id', 'desc')->paginate(10);
         $view['referralApplyList'] = ReferralApply::uid()->with('user')->orderBy('id', 'desc')->paginate(10);
         $view['referralUserList'] = User::query()->select(['username', 'created_at'])->where('referral_uid', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
-        $view['couponList'] = Coupon::query()->where('user_id', = , Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
+        $view['couponList'] = Coupon::query()->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(10);
 
         return Response::view('user.referral', $view);
     }
@@ -806,6 +807,7 @@ class UserController extends Controller
         $referralLog = ReferralLog::uid()->where('status', 0)->get();
         foreach ($referralLog as $log) {
             $link_logs .= $log->id . ',';
+            ReferralLog::query()->where('id', $log->id)->update(['status' => 1]);
         }
         $link_logs = rtrim($link_logs, ',');
 
@@ -849,7 +851,7 @@ class UserController extends Controller
         foreach ($referralLog as $log) {
             $link_logs .= $log->id . ',';
             #这里自动将 返利的那个 已返利变为2 就是已返利
-            ReferralLog::query()->where('id', $log->id)->update(['status' => 2]);
+            ReferralLog::query()->where('id', $log->id)->update(['status' => 3]);
             #song 这里直接将所有的返利记录变为2 
         }
         $link_logs = rtrim($link_logs, ',');
@@ -877,7 +879,7 @@ class UserController extends Controller
             $obj->logo = '';
             $obj->type = 1;
             $obj->usage = 1;
-            $obj->amount = $ref_amount * 100;
+            $obj->amount = $ref_amount;
             $obj->discount = 0;
             $obj->available_start = time();
             // 有效期为 购买日起 一年内
@@ -887,16 +889,15 @@ class UserController extends Controller
 
             DB::commit();
 
-            return Redirect::back()->with('successMsg', '生成成功');
+            return Response::json(['status' => 'success', 'data' => '', 'message' => '申请成功代金券成功']);
         } catch (\Exception $e) {
             DB::rollBack();
 
             Log::error('生成抵用券失败：' . $e->getMessage());
 
-            return Redirect::back()->withInput()->withErrors('生成失败：' . $e->getMessage());
+            return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：请联系管理员']);
         }
 
-        return Response::json(['status' => 'success', 'data' => '', 'message' => '申请成功，请等待管理员审核']);
     }
 
     // 帮助中心

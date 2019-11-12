@@ -8,8 +8,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <p>{{trans('home.promote_link', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])}}
-                        <br> *您可以将50%返利生成抵扣券，也可以按照2:1申请提取到您的银行卡。</p>
+                    <p>{{trans('home.promote_link', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100 , 'referral_percent2' => $referral_percent * 50])}}
+                        <br> *您可以将返利生成代金券，也可以按照2:1申请提取到您的银行卡，银行卡每笔打款手续费1-2￥。</p>
                 </div>
             </div>
         </div>
@@ -30,10 +30,17 @@
                             </a>
                         </div>
                     </div>
-                    <div>请核对您的收款信息：
-                        <br>收款人：{{Auth::user()->wechat}}
-                        <br>银行卡：{{Auth::user()->qq}}
-                        <br>如信息为空，请在个人设置设置您的收款信息</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="note note-info">
+                            <p>*请核对您的收款信息：
+                            <br>收款人：{{Auth::user()->wechat}}
+                            <br>银行卡：{{Auth::user()->qq}}
+                            <br><small>*您可以在<a href="profile#tab_2">收款方式</a>修改收款人</small></p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 邀请记录 -->
@@ -87,10 +94,9 @@
                             <span class="caption-subject bold"> {{trans('home.referral_title')}} </span>
                         </div>
                         <div class="actions">
-                            <button type="submit" class="btn red" onclick="extractCoupon()"> {{trans('home.referral_table_couponapply')}} </button>
-                        </div>
-                        <div class="actions">
-                            <button type="submit" class="btn red" onclick="extractMoney()"> {{trans('home.referral_table_apply')}} </button>
+                            <button type="submit" class="btn red" onclick="extractCoupon()">推荐 {{trans('home.referral_table_coupon')}} </button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button type="submit" class="btn green" onclick="extractMoney()"> {{trans('home.referral_table_apply')}} </button>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -123,7 +129,9 @@
                                                 @if ($referralLog->status == 1)
                                                     <span class="label label-sm label-danger">申请中</span>
                                                 @elseif($referralLog->status == 2)
-                                                    <span class="label label-sm label-default">已提现</span>
+                                                    <span class="label label-sm label-success">已提现</span>
+                                                @elseif($referralLog->status == 3)
+                                                    <span class="label label-sm label-warning">代金券</span>
                                                 @else
                                                     <span class="label label-sm label-info">未提现</span>
                                                 @endif
@@ -136,9 +144,73 @@
                         </div>
                         <div class="row">
                             <div class="col-md-5 col-sm-5">
-                                <div class="dataTables_info" role="status" aria-live="polite">{{trans('home.referral_summary', ['total' => $referralLogList->total(), 'amount' => $canAmount, 'money' => $referral_money])}}</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">{{trans('home.referral_summary', ['total' => $referralLogList->total(), 'amount' => $canAmount, 'money' => $referral_money])}}<br>{{trans('home.referral_summary1')}} </div>
                             </div>
                             <div class="col-md-7 col-sm-7">
+                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
+                                    {{ $referralLogList->links() }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- 生成折扣券记录 -->
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-dark">
+                            <span class="caption-subject bold"> {{trans('home.referral_apply_coupon')}} </span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                                <thead>
+                                <tr>
+                                    <th> # </th>
+                                    <th> 名称 </th>
+                                    <th> 代金券 </th>
+                                    <th> 金额 </th>
+                                    <th> 有效期 </th>
+                                    <th> 状态 </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @if($couponList->isEmpty())
+                                    <tr>
+                                        <td colspan="10" style="text-align: center;">暂无数据</td>
+                                    </tr>
+                                @else
+                                    @foreach($couponList as $coupon)
+                                        <tr class="odd gradeX">
+                                            <td> {{$coupon->id}} </td>
+                                            <td> {{$coupon->name}} </td>
+                                            <td> <span class="label label-info">{{$coupon->sn}}</span> </td>
+                                            <td>
+                                                ￥{{$coupon->amount}}
+                                            </td>
+                                            <td> {{date('Y-m-d H:i:s', $coupon->available_start)}} ~ {{date('Y-m-d H:i:s', $coupon->available_end)}} </td>
+                                            <td>
+                                                @if ($coupon->usage == 1)
+                                                    @if($coupon->status == '1')
+                                                        <span class="label label-default"> 已使用 </span>
+                                                    @elseif ($coupon->status == '2')
+                                                        <span class="label label-default"> 已失效 </span>
+                                                    @else
+                                                        <span class="label label-success"> 未使用 </span>
+                                                    @endif
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
                                     {{ $referralLogList->links() }}
                                 </div>
@@ -175,14 +247,16 @@
                                         <tr class="odd gradeX">
                                             <td> {{$key + 1}} </td>
                                             <td> {{$vo->created_at}} </td>
-                                            <td> {{$vo->amount}} </td>
+                                            <td> ￥{{$vo->amount}} </td>
                                             <td>
                                                 @if ($vo->status == 0)
-                                                    <span class="label label-sm label-danger">待审核</span>
+                                                    <span class="label label-sm label-primary">待审核</span>
                                                 @elseif($vo->status == 1)
-                                                    <span class="label label-sm label-default">审核通过待打款</span>
+                                                    <span class="label label-sm label-danger">审核通过待打款</span>
                                                 @elseif($vo->status == 2)
-                                                    <span class="label label-sm label-default">已打款</span>
+                                                    <span class="label label-sm label-success">已打款</span>
+                                                @elseif($vo->status == 3)
+                                                    <span class="label label-sm label-warning">代金券</span>
                                                 @else
                                                     <span class="label label-sm label-info">驳回</span>
                                                 @endif
@@ -203,68 +277,6 @@
                     </div>
                 </div>
 
-
-                <!-- 生成折扣券记录 -->
-                <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption font-dark">
-                            <span class="caption-subject bold"> {{trans('home.referral_apply_title')}} </span>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
-                                <thead>
-                                <tr>
-                                    <th> # </th>
-                                    <th> 名称 </th>
-                                    <th> 券码 </th>
-                                    <th> 优惠 </th>
-                                    <th> 有效期 </th>
-                                    <th> 状态 </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @if($couponList->isEmpty())
-                                    <tr>
-                                        <td colspan="10" style="text-align: center;">暂无数据</td>
-                                    </tr>
-                                @else
-                                    @foreach($couponList as $coupon)
-                                        <tr class="odd gradeX">
-                                            <td> {{$coupon->id}} </td>
-                                            <td> {{$coupon->name}} </td>
-                                            <td> <span class="label label-info">{{$coupon->sn}}</span> </td>
-                                            <td>
-                                                {{$coupon->amount}}元
-                                            </td>
-                                            <td> {{date('Y-m-d', $coupon->available_start)}} ~ {{date('Y-m-d', $coupon->available_end)}} </td>
-                                            <td>
-                                                @if ($coupon->usage == 1)
-                                                    @if($coupon->status == '1')
-                                                        <span class="label label-default"> 已使用 </span>
-                                                    @elseif ($coupon->status == '2')
-                                                        <span class="label label-default"> 已失效 </span>
-                                                    @else
-                                                        <span class="label label-success"> 未使用 </span>
-                                                    @endif
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12">
-                                <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                    {{ $referralLogList->links() }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <!-- END PAGE BASE CONTENT -->
