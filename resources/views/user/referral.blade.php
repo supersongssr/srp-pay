@@ -9,7 +9,7 @@
             <div class="col-md-12">
                 <div class="note note-info">
                     <p>{{trans('home.promote_link', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100 , 'referral_percent2' => $referral_percent * 50])}}
-                        <br> *您可以将返利生成代金券，也可以按照2:1申请提取到您的银行卡，银行卡每笔打款手续费1-2￥。</p>
+                        <br> *您可以将返利生成代金券，也可以按照2:1申请提取到您的银行卡，汇率按照银行卡汇率转换，每笔打款手续费0.1$。</p>
                 </div>
             </div>
         </div>
@@ -123,8 +123,8 @@
                                             <td> {{$key + 1}} </td>
                                             <td> {{$referralLog->created_at}} </td>
                                             <td> {{empty($referralLog->user) ? '【账号已删除】' : $referralLog->user->username}} </td>
-                                            <td> ￥{{$referralLog->amount}} </td>
-                                            <td> ￥{{$referralLog->ref_amount}} </td>
+                                            <td> ${{$referralLog->amount}} </td>
+                                            <td> ${{$referralLog->ref_amount}} </td>
                                             <td>
                                                 @if ($referralLog->status == 1)
                                                     <span class="label label-sm label-danger">申请中</span>
@@ -189,7 +189,7 @@
                                             <td> {{$coupon->name}} </td>
                                             <td> <span class="label label-info">{{$coupon->sn}}</span> </td>
                                             <td>
-                                                ￥{{$coupon->amount}}
+                                                ${{$coupon->amount}}
                                             </td>
                                             <td> {{date('Y-m-d H:i:s', $coupon->available_start)}} ~ {{date('Y-m-d H:i:s', $coupon->available_end)}} </td>
                                             <td>
@@ -247,7 +247,7 @@
                                         <tr class="odd gradeX">
                                             <td> {{$key + 1}} </td>
                                             <td> {{$vo->created_at}} </td>
-                                            <td> ￥{{$vo->amount}} </td>
+                                            <td> ${{$vo->amount}} </td>
                                             <td>
                                                 @if ($vo->status == 0)
                                                     <span class="label label-sm label-primary">待审核</span>

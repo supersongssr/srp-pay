@@ -136,6 +136,8 @@ class UserController extends Controller
         // 订阅连接二维码
         $view['link_qrcode'] = 'sub://' . base64url_encode($view['link']) . '#' . base64url_encode(self::$systemConfig['website_name']);
 
+
+        /** song 
         // 节点列表
         $userLabelIds = UserLabel::uid()->pluck('label_id');
         if (empty($userLabelIds)) {
@@ -144,16 +146,19 @@ class UserController extends Controller
 
             return Response::view('user.nodeList', $view);
         }
+        **/
 
         // 获取当前用户可用节点
         $nodeList = DB::table('ss_node')
             ->selectRaw('ss_node.*')
             ->leftJoin('ss_node_label', 'ss_node.id', '=', 'ss_node_label.node_id')
-            ->whereIn('ss_node_label.label_id', $userLabelIds)
+            //->whereIn('ss_node_label.label_id', $userLabelIds)
+            ->where('ss_node.sort', "<=", Auth::user()->level)
             ->where('ss_node.status', 1)
-            ->groupBy('ss_node.id')
+            //->groupBy('ss_node.id')
             ->orderBy('ss_node.sort', 'desc')
-            ->orderBy('ss_node.id', 'asc')
+            //->orderBy('ss_node.id', 'asc')
+            ->orderBy('ss_node.traffic_rate','asc')
             ->get();
 
         $allNodes = ''; // 全部节点SSR链接，用于一键复制所有节点
@@ -733,6 +738,11 @@ class UserController extends Controller
                     }
                 }
 
+                //song写入用户的等级
+                if ($goods->sort > $user->level) {
+                    User::query()->where('id', $order->user_id)->update(['level' => $goods->sort]);
+                }
+
                 // 写入返利日志
                 if ($user->referral_uid) {
                     $this->addReferralLog($user->id, $user->referral_uid, $order->oid, $amount, $amount * self::$systemConfig['referral_percent']);
@@ -969,7 +979,7 @@ class UserController extends Controller
             $this->addUserBalanceLog(Auth::user()->id, 0, Auth::user()->balance, Auth::user()->balance + $coupon->amount, $coupon->amount, '用户手动充值 - [充值券：' . $request->coupon_sn . ']');
 
             // 余额充值
-            User::uid()->increment('balance', $coupon->amount);
+            User::uid()->increment('balance', $coupon->amount * 100);
 
             // 更改卡券状态
             $coupon->status = 1;

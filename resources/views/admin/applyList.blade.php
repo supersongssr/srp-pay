@@ -66,7 +66,7 @@
                                                         <a href="{{url('admin/editUser?id=' . $apply->user_id)}}" target="_blank">{{$apply->user->username}}</a>
                                                     @endif
                                                 </td>
-                                                <td> {{$apply->amount}} </td>
+                                                <td> ${{$apply->amount}} * 5 =  ￥{{$apply->amount *5 }}</td>
                                                 <td> {{$apply->created_at}} </td>
                                                 <td>
                                                     @if($apply->status == -1)

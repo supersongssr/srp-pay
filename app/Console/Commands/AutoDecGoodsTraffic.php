@@ -112,6 +112,12 @@ class AutoDecGoodsTraffic extends Command
                         $userLabel->label_id = $vo;
                         $userLabel->save();
                     }
+
+                    // song 获取 用户商品最大 等级
+                    $maxLevel = Goods::query()->whereIn('id', $goodsIds)->orderBy('sort','desc')->pluck('sort')->first();  
+                    empty($maxLevel) && $maxLevel = 0;  // 如果为空 就算 0 
+                    // 将最新的等级写入到用户 中
+                    User::query()->where('id', $order->user->id)->update(['level' => $maxLevel]);
                 }
 
                 DB::commit();

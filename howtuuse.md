@@ -1,4 +1,12 @@
 
+#mysql 日志占用硬盘过大怎么处理？
+#在www/server/date 删除 mysql-bin.0000xx 这样的文件即可，默认是删除10天以前的数据。就是说：10天以前的会被删除
+#如果不是主从复制？那么直接注释掉这行即可，就不需要主从复制文件了
+#log-bin=mysql-bin  这一行可以注释掉
+#binlog_format=mixed  这一行可以注释掉
+#server-id = 1
+#expire_logs_days = 10    或者这一行改为3天即可
+
 ##what's new
 ````
 
@@ -37,8 +45,19 @@ PHP 7.1.3+ （必须）
 MYSQL 5.5+ （推荐5.6）
 内存 1G+ (推荐2G)
 磁盘空间 10G+
-PHP必须开启zip、xml、curl、gd2、fileinfo、openssl、mbstring组件
+PHP必须开启zip、xml、curl、gd2、fileinfo、openssl、mbstring putenv组件
 安装完成后记得编辑.env中 APP_DEBUG 改为 false
+````
+
+#### mysql配置
+````
+#mysql 日志占用硬盘过大怎么处理？
+#在www/server/date 删除 mysql-bin.0000xx 这样的文件即可，默认是删除10天以前的数据。就是说：10天以前的会被删除
+#如果不是主从复制？那么直接注释掉这行即可，就不需要主从复制文件了
+#log-bin=mysql-bin  这一行可以注释掉
+#binlog_format=mixed  这一行可以注释掉
+#server-id = 1
+#expire_logs_days = 10    或者这一行改为3天即可
 ````
 
 #### 编辑php.ini

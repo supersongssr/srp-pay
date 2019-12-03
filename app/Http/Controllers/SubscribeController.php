@@ -147,11 +147,14 @@ class SubscribeController extends Controller
         // 记录每次请求
         $this->log($subscribe->id, getClientIp(), $request->headers);
 
+        //song 
+        /**
         // 获取这个账号可用节点
         $userLabelIds = UserLabel::query()->where('user_id', $user->id)->pluck('label_id');
         if (empty($userLabelIds)) {
             exit($this->noneNode());
         }
+        **/
 
         $query = SsNode::query()->selectRaw('ss_node.*')->leftjoin("ss_node_label", "ss_node.id", "=", "ss_node_label.node_id");
 
@@ -160,7 +163,17 @@ class SubscribeController extends Controller
             $query->where('ss_node.type', 1);
         }
 
-        $nodeList = $query->where('ss_node.status', 1)->where('ss_node.is_subscribe', 1)->whereIn('ss_node_label.label_id', $userLabelIds)->groupBy('ss_node.id')->orderBy('ss_node.sort', 'desc')->orderBy('ss_node.id', 'asc')->get()->toArray();
+        $nodeList = $query->where('ss_node.status', 1)
+            ->where('ss_node.is_subscribe', 1)
+            //->whereIn('ss_node_label.label_id', $userLabelIds)
+            ->where('sort', '<=' ,$user->level)
+            ->groupBy('ss_node.id')
+            ->orderBy('ss_node.sort', 'desc')
+            //->orderBy('ss_node.id', 'asc')
+            ->orderBy('ss_node.traffic_rate', 'asc')
+            ->take(self::$systemConfig['subscribe_max'])
+            ->get()->toArray();
+            
         if (empty($nodeList)) {
             exit($this->noneNode());
         }

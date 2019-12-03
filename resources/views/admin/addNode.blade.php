@@ -146,10 +146,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="sort" class="col-md-3 control-label">排序</label>
+                                                    <label for="sort" class="col-md-3 control-label">等级</label>
                                                     <div class="col-md-8">
                                                         <input type="text" class="form-control" name="sort" value="1" id="sort" placeholder="">
-                                                        <span class="help-block"> 值越大排越前 </span>
+                                                        <span class="help-block"> 节点等级 </span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -167,7 +167,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!--
                                                 <div class="form-group">
                                                     <label for="bandwidth" class="col-md-3 control-label">出口带宽</label>
                                                     <div class="col-md-8">
@@ -193,7 +192,6 @@
                                                         <span class="help-block"> 例如：http://us1.ssrpanel.com/api/monitor </span>
                                                     </div>
                                                 </div>
-                                                -->
                                             </div>
                                         </div>
                                     </div>

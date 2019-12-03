@@ -26,14 +26,20 @@
                             <li>
                                 <h4>
                                     <span class="font-blue">账户余额：</span>
-                                    <span class="font-red">{{Auth::user()->balance}}元</span>
+                                    <span class="font-red">{{Auth::user()->balance}}$</span>
                                 </h4>
                             </li>
                             <li>
                                 <a class="btn btn-sm red" href="#" data-toggle="modal" data-target="#charge_modal" style="color: #FFF;">{{trans('home.recharge')}}</a>
                             </li>
+                            <li>
+                                <a href="#" target="_blank" class="btn green btn-sm">获取充值券码</a> <!-- song -->
+                            </li>
                         </ul>
                     </div>
+                    <div class="note note-info">
+                    <p> *您可以将未使用的余额可以提取到银行卡，每笔提现扣除20%支付平台手续费，汇率按照实时汇率计算，请提交工单。<br>*所有账号不限制使用设备数量，不限制使用人数，不限制带宽(峰值和用户网络有关，测试可达600Mbps)。</p>
+                </div>
                 </div>
             </div>
         </div>
@@ -44,10 +50,10 @@
                     <div class="portlet light">
                         <div class="tabbable-line">
                             <ul class="nav nav-tabs">
-                                <li class="active">
+                                <li >
                                     <a href="#services1" data-toggle="tab"> <i class="fa fa-book"></i> 说明 </a>
                                 </li>
-                                <li>
+                                <li class="active">
                                     <a href="#services2" data-toggle="tab"> <i class="fa fa-cloud"></i> 基础套餐 </a>
                                 </li>
                                 <li>
@@ -55,7 +61,7 @@
                                 </li>
                             </ul>
                             <div class="tab-content" style="font-size:16px;">
-                                <div class="tab-pane active" id="services1">
+                                <div class="tab-pane" id="services1">
                                     @if($direction)
                                         {!!$direction->content!!}
                                     @else
@@ -64,7 +70,7 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div class="tab-pane" id="services2">
+                                <div class="tab-pane active" id="services2">
                                     <div class="pricing-content-1" style="padding-top: 10px;">
                                         <div class="row">
                                             @if($packageList->isEmpty())
@@ -80,7 +86,7 @@
                                                             </div>
                                                             <div class="arrow-down border-top-{{$goods->color}}"></div>
                                                             <div class="price-table-pricing">
-                                                                <h3><sup class="price-sign">￥</sup>{{$goods->price}}</h3>
+                                                                <h3><sup class="price-sign">$</sup>{{$goods->price}}</h3>
                                                                 @if($goods->is_hot)
                                                                     <div class="price-ribbon">热销</div>
                                                                 @endif
@@ -132,7 +138,7 @@
                                                             </div>
                                                             <div class="arrow-down border-top-{{$goods->color}}"></div>
                                                             <div class="price-table-pricing">
-                                                                <h3><sup class="price-sign">￥</sup>{{$goods->price}}</h3>
+                                                                <h3><sup class="price-sign">$</sup>{{$goods->price}}</h3>
                                                                 @if($goods->is_hot)
                                                                     <div class="price-ribbon">热销</div>
                                                                 @endif
@@ -203,7 +209,7 @@
                                         <div class="col-md-6">
                                             <select class="form-control" name="online_pay" id="online_pay">
                                                 @foreach($chargeGoodsList as $key => $goods)
-                                                    <option value="{{$goods->id}}">充值{{$goods->price}}元</option>
+                                                    <option value="{{$goods->id}}">充值{{$goods->price}}$</option>
                                                 @endforeach
                                             </select>
                                         </div>

@@ -46,7 +46,7 @@
                             <table class="table table-striped table-hover table-checkable">
                                 <thead>
                                     <tr class="uppercase">
-                                        <th colspan="6">ID：{{$info->id}} | 申请人：{{$info->user->username}} | 提现金额：{{$info->amount}} | 申请时间：{{$info->created_at}}</th>
+                                        <th colspan="6">ID：{{$info->id}} | 申请人：{{$info->user->username}} | 提现金额：${{$info->amount}} * 5 = ￥{{$info->amount *5}} | 申请时间：{{$info->created_at}}</th>
                                     </tr>
                                     <tr>
                                         <th colspan="6">收款人：  {{$info->user->wechat}}     | 银行卡：   {{$info->user->qq}}</th>
