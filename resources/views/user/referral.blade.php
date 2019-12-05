@@ -30,6 +30,9 @@
                             </a>
                         </div>
                     </div>
+                    <div class="note note-info">
+                        <p>2019.11.1 - 12.31日期间，消费返利>$2超过7次，可获得本站永久VIP*<small>(*系统时间上限2099年，默认赠送VIP7，可在返利金额处查看 > 消费返利>$2的次数)</small></p>
+                    </div>
                 </div>
 
                 <div class="row">

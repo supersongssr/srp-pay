@@ -62,7 +62,7 @@
                                                     @if($node->is_transit)
                                                         <span class="label {{$node->status ? 'label-info' : 'label-default'}}">{{$node->is_transit ? '中转' : ''}}</span>
                                                     @else
-                                                        <span class="label {{$node->status ? 'label-info' : 'label-default'}}">{{$node->type == 2 ? 'V2Ray' : 'Shadowsocks(R)'}}</span>
+                                                        <span class="label {{$node->status ? 'label-info' : 'label-default'}}">{{$node->type == 2 ? 'V2' : 'S1'}}</span>
                                                     @endif
                                                 </td>
                                                 <td> {{$node->name}} </td>

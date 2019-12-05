@@ -54,5 +54,16 @@ class AutoStatisticsNodeDailyTraffic extends Command
             $obj->traffic = $traffic;
             $obj->save();
         }
+
+        if ($total < 17179869184) {
+            # code...
+            $node->ipv6 .= '*';
+            $node->status = 0;
+        }
+        //节点描述里，加上每日节点流量表现数值 
+        $node->desc = floor($total / 1073741824) . ' ' . $node->desc;
+        $node->desc = substr($node->desc, 0,32);
+        // 保留1位小数
+        $node->traffic_rate = round( ($total * 64 / 1073741824 / $node->bandwidth) , 2);
     }
 }

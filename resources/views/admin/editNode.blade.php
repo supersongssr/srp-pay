@@ -93,10 +93,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="ssh_port" class="col-md-3 control-label"> SSH端口 </label>
+                                                    <label for="ssh_port" class="col-md-3 control-label"> S1端口 </label>
                                                     <div class="col-md-8">
-                                                        <input type="text" class="form-control" name="ssh_port" value="{{$node->ssh_port}}" id="ssh_port" placeholder="服务器SSH端口" required>
-                                                        <span class="help-block">请务必正确填写此值，否则TCP阻断检测可能误报</span>
+                                                        <input type="text" class="form-control" name="ssh_port" value="{{$node->ssh_port}}" id="ssh_port" placeholder="S1端口" required>
+                                                        <span class="help-block">后端会自动配置这个值</span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -171,16 +171,16 @@
                                                     </div>
                                                 </div>
                                                                                                 <div class="form-group">
-                                                    <label for="bandwidth" class="col-md-3 control-label">出口带宽</label>
+                                                    <label for="bandwidth" class="col-md-3 control-label">每月流量</label>
                                                     <div class="col-md-8">
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" name="bandwidth" value="{{$node->bandwidth}}" id="bandwidth" placeholder="" required>
-                                                            <span class="input-group-addon">M</span>
+                                                            <span class="input-group-addon">G</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="traffic" class="col-md-3 control-label">每月可用流量</label>
+                                                    <label for="traffic" class="col-md-3 control-label">已用流量</label>
                                                     <div class="col-md-8">
                                                         <div class="input-group">
                                                             <input type="text" class="form-control right" name="traffic" value="{{$node->traffic}}" id="traffic" placeholder="" required>
@@ -189,10 +189,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="monitor_url" class="col-md-3 control-label">监控地址</label>
+                                                    <label for="monitor_url" class="col-md-3 control-label">V2S1</label>
                                                     <div class="col-md-8">
-                                                        <input type="text" class="form-control right" name="monitor_url" value="{{$node->monitor_url}}" id="monitor_url" placeholder="节点实时监控地址">
-                                                        <span class="help-block"> 例如：http://us1.xxx.com/monitor.php </span>
+                                                        <input type="text" class="form-control right" name="monitor_url" value="{{$node->monitor_url}}" id="monitor_url" placeholder="V2S1配置">
+                                                        <span class="help-block"> S1的密码 V2的SSID </span>
                                                     </div>
                                                 </div>
                                                                                             </div>

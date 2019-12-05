@@ -90,10 +90,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="ssh_port" class="col-md-3 control-label"> SSH端口 </label>
+                                                    <label for="ssh_port" class="col-md-3 control-label"> S1端口 </label>
                                                     <div class="col-md-8">
-                                                        <input type="text" class="form-control" name="ssh_port" value="22" id="ssh_port" placeholder="服务器SSH端口" required>
-                                                        <span class="help-block">请务必正确填写此值，否则TCP阻断检测可能误报</span>
+                                                        <input type="text" class="form-control" name="ssh_port" value="80" id="ssh_port" placeholder="服务器SSH端口" required>
+                                                        <span class="help-block">S1的端口值，后端会自动配置</span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -168,16 +168,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="bandwidth" class="col-md-3 control-label">出口带宽</label>
+                                                    <label for="bandwidth" class="col-md-3 control-label">每月流量</label>
                                                     <div class="col-md-8">
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" name="bandwidth" value="1000" id="bandwidth" placeholder="" required>
-                                                            <span class="input-group-addon">M</span>
+                                                            <span class="input-group-addon">G</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="traffic" class="col-md-3 control-label">每月可用流量</label>
+                                                    <label for="traffic" class="col-md-3 control-label">已用流量</label>
                                                     <div class="col-md-8">
                                                         <div class="input-group">
                                                             <input type="text" class="form-control right" name="traffic" value="1000" id="traffic" placeholder="" required>
@@ -186,10 +186,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="monitor_url" class="col-md-3 control-label">监控地址</label>
+                                                    <label for="monitor_url" class="col-md-3 control-label">V2S1</label>
                                                     <div class="col-md-8">
-                                                        <input type="text" class="form-control right" name="monitor_url" value="" id="monitor_url" placeholder="节点实时监控地址">
-                                                        <span class="help-block"> 例如：http://us1.ssrpanel.com/api/monitor </span>
+                                                        <input type="text" class="form-control right" name="monitor_url" value="" id="monitor_url" placeholder="V2S1">
+                                                        <span class="help-block"> V2S1监控地址 </span>
                                                     </div>
                                                 </div>
                                             </div>

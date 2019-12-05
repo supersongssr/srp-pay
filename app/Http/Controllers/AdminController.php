@@ -567,6 +567,7 @@ class AdminController extends Controller
     public function addNode(Request $request)
     {
         if ($request->isMethod('POST')) {
+            /**
             if ($request->get('ssh_port') <= 0 || $request->get('ssh_port') >= 65535) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败：SSH端口不合法']);
             }
@@ -588,6 +589,7 @@ class AdminController extends Controller
                     return Response::json(['status' => 'fail', 'data' => '', 'message' => '绑定域名不合法']);
                 }
             }
+            **/
 
             // TODO：判断是否已存在绑定了相同域名的节点，提示是否要强制替换，或者不提示之前强制将其他节点的绑定域名置为空，然后发起域名绑定请求，或者请求进入队列
 
@@ -685,6 +687,7 @@ class AdminController extends Controller
         $id = $request->get('id');
 
         if ($request->isMethod('POST')) {
+            /**
             if ($request->get('ssh_port') <= 0 || $request->get('ssh_port') >= 65535) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：SSH端口不合法']);
             }
@@ -710,6 +713,7 @@ class AdminController extends Controller
             if ($request->get('v2_alter_id') <= 0 || $request->get('v2_alter_id') >= 65535) {
                 return Response::json(['status' => 'fail', 'data' => '', 'message' => '编辑失败：AlterId不合法']);
             }
+            **/
 
             DB::beginTransaction();
             try {
